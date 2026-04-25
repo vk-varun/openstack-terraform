@@ -9,10 +9,14 @@ ${ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
 %{ endfor ~}
 
 [network]
-# (optional) add dedicated network nodes later
+%{ for ip in networks ~}
+${ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+%{ endfor ~}
 
 [storage]
-# (optional) add Ceph/storage nodes later
+%{ for ip in storages ~}
+${ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+%{ endfor ~}
 
 [deployment]
 localhost ansible_connection=local

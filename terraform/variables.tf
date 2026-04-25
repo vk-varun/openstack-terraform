@@ -13,7 +13,8 @@ variable "zone" {
 }
 
 variable "public_key" {
-  description = "Path to SSH public key"
+  description = "Path to SSH public key (Cloud Shell default)"
+  default     = "~/.ssh/google_compute_engine.pub"
 }
 
 variable "node_counts" {
@@ -21,10 +22,14 @@ variable "node_counts" {
   type = object({
     controller = number
     compute    = number
+    network    = number
+    storage    = number
   })
   default = {
     controller = 2
     compute    = 2
+    network    = 1
+    storage    = 1
   }
 }
 

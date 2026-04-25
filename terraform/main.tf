@@ -61,7 +61,6 @@ resource "google_compute_firewall" "ssh" {
   target_tags   = ["openstack"]
 }
 
-# Optional: Horizon / API from outside
 resource "google_compute_firewall" "api" {
   name    = "openstack-api"
   network = google_compute_network.vpc.name
@@ -95,7 +94,7 @@ resource "google_compute_instance" "controller" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.subnet.id
-    # Static IPs for controllers: 10.0.0.10, 10.0.0.11, ...
+    # 10.0.0.10, 10.0.0.11, ...
     network_ip = "10.0.0.${10 + count.index}"
     access_config {}
   }
@@ -127,7 +126,7 @@ resource "google_compute_instance" "compute" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.subnet.id
-    # Static IPs for computes: 10.0.0.20, 10.0.0.21, ...
+    # 10.0.0.20, 10.0.0.21, ...
     network_ip = "10.0.0.${20 + count.index}"
     access_config {}
   }
@@ -137,4 +136,83 @@ resource "google_compute_instance" "compute" {
   }
 
   metadata_startup_script = file("${path.module}/bootstrap.sh")
+}
+
+# ----------------------------
+# Network nodes
+# ----------------------------
+resource "google_compute_instance" "network" {
+  count        = var.node_counts.network
+  name         = "network-${count.index}"
+  machine_type = "e2-standard-4"
+  zone         = var.zone
+  tags         = ["openstack", "network"]
+
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-2204-jammy-v202402"
+      size  = 40
+      type  = "pd-ssd"
+    }
+  }
+
+  network_interface {
+    subnetwork = google_compute_subnetwork.subnet.id
+    # 10.0.0.30, 10.0.0.31, ...
+    network_ip = "10.0.0.${30 + count.index}"
+    access_config {}
+  }
+
+  metadata = {
+    ssh-keys = "ubuntu:${file(var.public_key)}"
+  }
+
+  metadata_startup_script = file("${path.module}/bootstrap.sh")
+}
+
+# ----------------------------
+# Storage (Ceph) nodes
+# ----------------------------
+resource "google_compute_instance" "storage" {
+  count        = var.node_counts.storage
+  name         = "storage-${count.index}"
+  machine_type = "e2-standard-4"
+  zone         = var.zone
+  tags         = ["openstack", "storage"]
+
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-2204-jammy-v202402"
+      size  = 40
+      type  = "pd-ssd"
+    }
+  }
+
+  network_interface {
+    subnetwork = google_compute_subnetwork.subnet.id
+    # 10.0.0.40, 10.0.0.41, ...
+    network_ip = "10.0.0.${40 + count.index}"
+    access_config {}
+  }
+
+  metadata = {
+    ssh-keys = "ubuntu:${file(var.public_key)}"
+  }
+
+  metadata_startup_script = file("${path.module}/bootstrap.sh")
+}
+
+# Extra disks for Ceph OSDs (one per storage node)
+resource "google_compute_disk" "storage_osd" {
+  count = var.node_counts.storage
+  name  = "storage-osd-${count.index}"
+  type  = "pd-ssd"
+  size  = 200
+  zone  = var.zone
+}
+
+resource "google_compute_attached_disk" "storage_osd_attach" {
+  count    = var.node_counts.storage
+  disk     = google_compute_disk.storage_osd[count.index].id
+  instance = google_compute_instance.storage[count.index].id
 }
