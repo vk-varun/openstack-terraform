@@ -206,8 +206,8 @@ resource "google_compute_instance" "storage" {
 resource "google_compute_disk" "storage_osd" {
   count = var.node_counts.storage
   name  = "storage-osd-${count.index}"
-  type  = "pd-ssd"
-  size  = 200
+  type  = "pd-balanced"
+  size  = 50
   zone  = var.zone
 }
 
