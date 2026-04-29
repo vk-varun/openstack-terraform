@@ -86,7 +86,7 @@ resource "google_compute_instance" "controller" {
 
   boot_disk {
     initialize_params {
-      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
+      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts-amd64"
       size  = 50
       type  = "pd-balanced"
     }
@@ -118,7 +118,7 @@ resource "google_compute_instance" "compute" {
 
   boot_disk {
     initialize_params {
-      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
+      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts-amd64"
       size  = 50
       type  = "pd-balanced"
     }
@@ -150,7 +150,7 @@ resource "google_compute_instance" "network" {
 
   boot_disk {
     initialize_params {
-      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
+      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts-amd64"
       size  = 40
       type  = "pd-balanced"
     }
@@ -182,7 +182,7 @@ resource "google_compute_instance" "storage" {
 
   boot_disk {
     initialize_params {
-      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
+      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts-amd64"
       size  = 40
       type  = "pd-balanced"
     }
