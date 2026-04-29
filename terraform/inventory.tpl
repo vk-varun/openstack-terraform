@@ -18,5 +18,10 @@ ${ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
 ${ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
 %{ endfor ~}
 
+[loadbalancer]
+%{ for ip in controllers ~}
+${ip} ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+%{ endfor ~}
+
 [deployment]
 localhost ansible_connection=local
