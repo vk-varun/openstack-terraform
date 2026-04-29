@@ -26,8 +26,8 @@ variable "node_counts" {
     storage    = number
   })
   default = {
-    controller = 2
-    compute    = 2
+    controller = 1
+    compute    = 1
     network    = 1
     storage    = 1
   }

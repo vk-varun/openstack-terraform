@@ -88,7 +88,7 @@ resource "google_compute_instance" "controller" {
     initialize_params {
       image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
       size  = 50
-      type  = "pd-ssd"
+      type  = "pd-balanced"
     }
   }
 
@@ -120,7 +120,7 @@ resource "google_compute_instance" "compute" {
     initialize_params {
       image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
       size  = 50
-      type  = "pd-ssd"
+      type  = "pd-balanced"
     }
   }
 
@@ -144,7 +144,7 @@ resource "google_compute_instance" "compute" {
 resource "google_compute_instance" "network" {
   count        = var.node_counts.network
   name         = "network-${count.index}"
-  machine_type = "e2-standard-4"
+  machine_type = "e2-standard-2"
   zone         = var.zone
   tags         = ["openstack", "network"]
 
@@ -152,7 +152,7 @@ resource "google_compute_instance" "network" {
     initialize_params {
       image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
       size  = 40
-      type  = "pd-ssd"
+      type  = "pd-balanced"
     }
   }
 
@@ -184,7 +184,7 @@ resource "google_compute_instance" "storage" {
     initialize_params {
       image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
       size  = 40
-      type  = "pd-ssd"
+      type  = "pd-balanced"
     }
   }
 
